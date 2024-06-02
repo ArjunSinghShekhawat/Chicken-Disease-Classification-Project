@@ -1,16 +1,62 @@
 from src.logger import logging
-from src.exception import CustomeException
+from src.pipeline.stage_01_data_ingestion import DataIngestionTrainingPipeline
+from src.pipeline.stage_02_prepare_base_model import PrepareBaseModelTrainingPipeline
+from src.pipeline.stage_03_training import ModelTrainingPipeline
+from src.pipeline.stage_04_evaluation import EvaluationPipeline
+from src.exception import CustomException
 import sys
-from src.pipeline.stage_01_data_ingestion_pipeline import DataIngestionTrainingPipeline
+
+STAGE_NAME = "Data Ingestion stage"
+try:
+   logging.info(f">>>>>> stage {STAGE_NAME} started <<<<<<") 
+   data_ingestion = DataIngestionTrainingPipeline()
+   data_ingestion.main()
+   logging.info(f">>>>>> stage {STAGE_NAME} completed <<<<<<\n\nx==========x")
+except Exception as e:
+        logging.exception(e)
+        raise CustomException(e,sys)
 
 
-STAGE_NAME = "Data ingestion Stage"
 
-if __name__=="__main__":
-    try:
-        logging.info(f">>>>>>>>>{STAGE_NAME}<<<<<<<<<<<")
-        obj = DataIngestionTrainingPipeline()
-        obj.main()
-        logging.info(f">>>>>>>>>>>{STAGE_NAME} Completed <<<<<<<<<<<<")
-    except Exception as e:
-        raise CustomeException(e,sys)
+
+STAGE_NAME = "Prepare base model"
+try: 
+   logging.info(f"*******************")
+   logging.info(f">>>>>> stage {STAGE_NAME} started <<<<<<")
+   prepare_base_model = PrepareBaseModelTrainingPipeline()
+   prepare_base_model.main()
+   logging.info(f">>>>>> stage {STAGE_NAME} completed <<<<<<\n\nx==========x")
+except Exception as e:
+        logging.exception(e)
+        raise CustomException(e,sys)
+
+
+
+
+STAGE_NAME = "Training"
+try: 
+   logging.info(f"*******************")
+   logging.info(f">>>>>> stage {STAGE_NAME} started <<<<<<")
+   model_trainer = ModelTrainingPipeline()
+   model_trainer.main()
+   logging.info(f">>>>>> stage {STAGE_NAME} completed <<<<<<\n\nx==========x")
+except Exception as e:
+        logging.exception(e)
+        raise CustomException(e,sys)
+
+
+
+
+
+
+STAGE_NAME = "Evaluation stage"
+try:
+   logging.info(f"*******************")
+   logging.info(f">>>>>> stage {STAGE_NAME} started <<<<<<")
+   model_evalution = EvaluationPipeline()
+   model_evalution.main()
+   logging.info(f">>>>>> stage {STAGE_NAME} completed <<<<<<\n\nx==========x")
+
+except Exception as e:
+        logging.exception(e)
+        raise CustomException(e,sys)
