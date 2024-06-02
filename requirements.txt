@@ -1,9 +1,6 @@
 tensorflow
-<<<<<<< HEAD
 pandas 
-=======
 pandas
->>>>>>> 03dd003 (first commit)
 dvc
 notebook
 numpy

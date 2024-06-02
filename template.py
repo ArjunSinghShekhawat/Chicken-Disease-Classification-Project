@@ -2,7 +2,6 @@ import os
 from pathlib import Path
 import logging
 
-<<<<<<< HEAD
 logging.basicConfig(level=logging.INFO,format='[%(asctime)s]: %(message)s:')
 
 file_list = [
@@ -41,7 +40,7 @@ for file_path in file_list:
         logging.info("File Successfully Create !")
     else:
         logging.info(f"{filename} is already exists !")
-=======
+
 logging.basicConfig(
     format="[ %(asctime)s] %(lineno)d %(name)s - %(levelname)s - %(message)s",
     level=logging.INFO
@@ -79,7 +78,3 @@ for file_path in list_of_files:
     else:
         logging.info("File allready exists {}".format(file_name))
         
-
-
-
->>>>>>> 03dd003 (first commit)
