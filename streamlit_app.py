@@ -46,6 +46,6 @@ if uploaded_file is not None:
     
     try:
         result = clApp.classifier.predict()
-        st.write(f"Prediction: {result}")
+        st.write(f"Prediction: {result[0]['image']}")
     except Exception as e:
         st.error(f"Prediction failed: {e}")
