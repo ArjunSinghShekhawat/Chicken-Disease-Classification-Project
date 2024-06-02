@@ -1,48 +1,51 @@
-from flask import Flask, request, jsonify, render_template
-import os
-from flask_cors import CORS, cross_origin
+import streamlit as st
 from src.utils.common import decodeImage
 from src.pipeline.prediction import PredictionPipeline
+import os
 
-
-os.putenv('LANG', 'en_US.UTF-8')
-os.putenv('LC_ALL', 'en_US.UTF-8')
-
-app = Flask(__name__)
-CORS(app)
-
+# Setting environment variables for UTF-8 encoding
+os.environ['LANG'] = 'en_US.UTF-8'
+os.environ['LC_ALL'] = 'en_US.UTF-8'
 
 class ClientApp:
     def __init__(self):
         self.filename = "inputImage.jpg"
         self.classifier = PredictionPipeline(self.filename)
 
+# Initialize ClientApp instance
+clApp = ClientApp()
 
-@app.route("/", methods=['GET'])
-@cross_origin()
-def home():
-    return render_template('index.html')
+# Streamlit App
+st.title("Chicken Disease Classification")
 
+# Home Page
+st.write("Welcome to the Chicken Disease Classification App")
 
-@app.route("/train", methods=['GET','POST'])
-@cross_origin()
-def trainRoute():
-    os.system("python main.py")
-    return "Training done successfully!"
+# Training Route
+if st.button('Train Model'):
+    with st.spinner('Training...'):
+        try:
+            os.system("python main.py")
+            st.success("Training done successfully!")
+        except Exception as e:
+            st.error(f"Training failed: {e}")
 
+# Prediction Route
+st.header("Predict Disease")
+uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
 
-
-@app.route("/predict", methods=['POST'])
-@cross_origin()
-def predictRoute():
-    image = request.json['image']
-    decodeImage(image, clApp.filename)
-    result = clApp.classifier.predict()
-    return jsonify(result)
-
-
-if __name__ == "__main__":
-    clApp = ClientApp()
-    # app.run(host='0.0.0.0', port=8080) #local host
-    # app.run(host='0.0.0.0', port=8080) #for AWS
-    app.run(host='0.0.0.0', port=80) #for AZURE
+if uploaded_file is not None:
+    # Save uploaded file to the filename specified in ClientApp
+    with open(clApp.filename, "wb") as f:
+        f.write(uploaded_file.getbuffer())
+    
+    # Display the uploaded image
+    st.image(uploaded_file, caption='Uploaded Image.', use_column_width=True)
+    st.write("")
+    st.write("Classifying...")
+    
+    try:
+        result = clApp.classifier.predict()
+        st.write(f"Prediction: {result}")
+    except Exception as e:
+        st.error(f"Prediction failed: {e}")
